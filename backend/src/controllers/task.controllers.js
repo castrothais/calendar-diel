@@ -23,7 +23,7 @@ const listTasks = async (req, res, next) => {
       const allTasks = await findTasks();
       return res.status(success).json(allTasks);
     }
-    const talkersList = await Task.find({ title });
+    const talkersList = await Task.find({ title: { $regex: title, $options: 'i' } });
     return res.status(success).json(talkersList);
   } catch (error) {
     return next(error);
