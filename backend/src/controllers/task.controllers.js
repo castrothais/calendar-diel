@@ -1,6 +1,6 @@
 const moment = require('moment');
 const Task = require('../models/task');
-const { createTasks, findTasks } = require('../services/task.services');
+const { createTasks, findTasks, updateTaskById } = require('../services/task.services');
 const { created, success } = require('../utils/status');
 
 const create = async (req, res, next) => {
@@ -30,4 +30,17 @@ const listTasks = async (req, res, next) => {
   }
 };
 
-module.exports = { create, listTasks };
+const updateTasks = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const {
+      title, description, duration,
+    } = req.body;
+    const newTask = await updateTaskById(id, { title, description, duration });
+    return res.status(success).json(newTask);
+  } catch (error) {
+    return next(error);
+  }
+};
+
+module.exports = { create, listTasks, updateTasks };

@@ -7,4 +7,4 @@ const taskSchemas = Joi.object({
   duration: Joi.number().integer().required(),
 });
 
-module.exports = taskSchemas;
+module.exports = { taskSchemas };

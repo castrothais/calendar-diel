@@ -1,7 +1,8 @@
+const { ObjectId } = require('mongodb');
 const Task = require('../models/task');
-const taskSchemas = require('../schemas/taskSchemas');
+const { taskSchemas } = require('../schemas/taskSchemas');
 const errorConstructor = require('../utils/errorConstructor');
-const { badRequest } = require('../utils/status');
+const { badRequest, notFound } = require('../utils/status');
 
 const validateTask = (title, description, dateTask, duration) => {
   const { error } = taskSchemas.validate({
@@ -24,4 +25,19 @@ const findTasks = async () => {
   return allTasks;
 };
 
-module.exports = { createTasks, findTasks };
+const verifyTaskId = async (id) => {
+  const taskExist = await Task.findOne({ _id: ObjectId(id) });
+  if (!taskExist) throw errorConstructor(notFound, 'Task not found');
+};
+
+const updateTaskById = async (id, updateTask) => {
+  await verifyTaskId(id);
+  const resultUpdate = await Task.updateOne({ _id: id }, updateTask);
+  const objectUpdated = await Task.findById(id);
+  return {
+    result: resultUpdate.acknowledged,
+    objectUpdated,
+  };
+};
+
+module.exports = { createTasks, findTasks, updateTaskById };
