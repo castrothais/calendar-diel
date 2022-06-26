@@ -40,4 +40,11 @@ const updateTaskById = async (id, updateTask) => {
   };
 };
 
-module.exports = { createTasks, findTasks, updateTaskById };
+const deleteTaskById = async (id) => {
+  await verifyTaskId(id);
+  await Task.deleteOne({ _id: id });
+};
+
+module.exports = {
+  createTasks, findTasks, updateTaskById, deleteTaskById,
+};
